@@ -19,4 +19,18 @@ class ArraySchema extends Schema
         $this->validators['sizeof'] = fn($value) => count($value) === $length;
         return $this;
     }
+
+    public function shape(array $schemas): self
+    {
+        $this->validators['shape'] = function ($value) use ($schemas): bool {
+            foreach ($schemas as $key => $schema) {
+                if (!$schema->isValid($value[$key])) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+        return $this;
+    }
 }
